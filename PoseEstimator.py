@@ -2,9 +2,9 @@ import numpy as np
 import matlab.engine
 
 class PoseEstimator:
-    def __init__(self, constellation_: dict, pix_width: int, pix_height: int, flength_pix: float):
+    def __init__(self, constellation_: dict, pix_width: int, pix_height: int, focal_pix: float):
         '''
-        :param constellation_: dictionary of points with unique identifiers as keys and (x, y, z) coordinates as values
+        :param constellation_: dictionary of points with unique identifiers as keys and lists of (x, y, z) coordinates as values
         :param pix_width: pixels in image width
         :param pix_height: pixels in image height
         :param flength_pix: focal length of camera
@@ -13,7 +13,7 @@ class PoseEstimator:
         self.constellation = constellation_
         self.pixel_width = pix_width
         self.pixel_height = pix_height
-        self.focal_length_pixels = flength_pix
+        self.focal_length_pixels = focal_pix
         self.last_rotation = None
         self.last_translation = None
         self.flag = None
@@ -23,7 +23,7 @@ class PoseEstimator:
 
     def updatePose(self, pixels: dict):
         '''
-        :param pixels: dictionary of pixel locations with identifiers as keys and (u, v) pixel coordinates as values
+        :param pixels: dictionary of pixel locations with identifiers as keys and lists of (u, v) pixel coordinates as values
         NOTE: Identifiers for pixel coordinates must match those of constellation points
         '''
 
