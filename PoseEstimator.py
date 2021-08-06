@@ -19,6 +19,7 @@ class PoseEstimator:
         self.flag = None
 
         self.eng = matlab.engine.start_matlab()
+        self.eng.addpath('OPnP')
 
     def updatePose(self, pixels: dict):
         '''
