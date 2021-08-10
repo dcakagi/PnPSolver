@@ -81,9 +81,14 @@ class PoseEstimator:
     def getRotationEstimate(self):
         return self.last_rotation
 
-    def getTranlsationEstimate(self):
+    def getTranslationEstimate(self):
         return self.last_translation
 
     def getFlag(self):
         return self.flag
 
+    def setFocalLengthPixels(self, new_focal_length: float):
+        self.focal_length_pixels = new_focal_length
+
+    def setFocalLengthPixelsFromFOV(self, fov: float):
+        self.focal_length_pixels = self.pixel_width / (2 * np.tan(fov / 2))
