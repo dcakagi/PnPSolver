@@ -69,7 +69,7 @@ class PoseEstimator:
 
             ret, rvecs, tvecs = cv2.solvePnP(constellation_points, pixel_points, cam_mat, distortion)
             self.last_rotation = cv2.Rodrigues(rvecs)[0]
-            self.last_translation = tvecs ## Check for array type
+            self.last_translation = tvecs
 
         self.location_estimate = -self.last_rotation.T @ self.last_translation
 
