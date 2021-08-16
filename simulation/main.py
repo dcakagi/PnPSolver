@@ -1,7 +1,5 @@
 import airsim
 import numpy as np
-import os
-import cv2
 import time
 import sys
 sys.path.append("../")
@@ -10,10 +8,12 @@ from PoseEstimator import PoseEstimator
 from Plotter import ErrorPlotter
 from Plotter import PosePlotter
 from light_detector import LightDetector
+
 import pickle
+import cv2
 
 # connect to the AirSim simulator
-client = airsim.MultirotorClient("10.32.114.100")
+client = airsim.MultirotorClient()
 client.confirmConnection()
 
 landing_point = np.array([-35880.0,-41940.0,4870.0])
@@ -34,7 +34,6 @@ pixels_width = 3840
 fov = np.pi / 2
 focal_pixels = pixels_width / (2 * np.tan(fov / 2))
 
-# estimator = PoseEstimator(constellation, pixels_width, pixels_height, focal_pixels)
 estimator_cv = PoseEstimator(constellation, pixels_width, pixels_height, focal_pixels, solver_type="opencv")
 
 
@@ -49,30 +48,18 @@ pose_plot.set_xlabel(0, "X Position (m)")  # Change default axes labels if neede
 pose_plot.set_ylabel(0, "Y Position (m)")
 pose_plot.set_ylabel(1, "Z Position (m)")
 
-# rotation_plots = ["Pitch", "Roll", "Yaw"]
-# rot_plotter = ErrorPlotter(rotation_plots, 100, 'rad', 's')
-# rot_plotter.set_title("Rotational Errors")
-
-# video writer
-# fourcc = cv2.VideoWriter_fourcc(*'avc1')
-# video_out = cv2.VideoWriter('output.mp4',fourcc, 1/.7, (pixels_width,pixels_height))
-
 #start the picture grabing and estimations
 light_detector = LightDetector()
 start = time.time()
 first = True
 i = 0
 
-actual_positions = []
 while(True):
 # while (time.time()-start < 10):
     start_time = time.time()
 
     responses = client.simGetImages([
                         airsim.ImageRequest("0", airsim.ImageType.Scene, False, False)])  #scene vision image in uncompressed RGBA array
-    # file = open("FOV","r")
-    # fov = np.deg2rad(float(file.read()))
-    # estimator_cv.setFocalLengthPixelsFromFOV(fov)
 
     if first:
         start_time_stamp = responses[0].time_stamp
@@ -91,14 +78,11 @@ while(True):
 
     position.x_val -= landing_point[0]
     position.y_val -= landing_point[1]
-    position.z_val -= landing_point[2]
-    
+    position.z_val -= landing_point[2]    
     
     # print("camera Position: ")
     # print(position)
     # print()
-    # print("camera orientation (quaternion): ")
-    # print(orientation)
 
     image_1d = np.frombuffer(image_bytes, dtype=np.uint8) 
 
@@ -122,12 +106,9 @@ while(True):
     if len(pixel_locations.values()) < 6:
         print( "Not enought points detected")
         continue
-    # estimated_camera_location = estimator.updatePose(pixel_locations)
+    
     estimated_camera_location_cv = estimator_cv.updatePose(pixel_locations)
 
-    # x_est_cv = estimated_camera_location[0, 0]
-    # y_est_cv = estimated_camera_location[1, 0]
-    # z_est_cv = estimated_camera_location[2, 0]
     x_est_cv = estimated_camera_location_cv[0, 0]
     y_est_cv = estimated_camera_location_cv[1, 0]
     z_est_cv = estimated_camera_location_cv[2, 0]
@@ -140,33 +121,12 @@ while(True):
     y_error_cv = y_est_cv - y_val
     z_error_cv = z_est_cv - z_val
 
-    # print(f"\nOPnP X estimate: {x_est}")
-    # print(f"OPnP Y estimate: {y_est}")
-    # print(f"OPnP Z estimate: {z_est}")
-
-    # print(f"\nOPnP X % error: {x_error}")
-    # print(f"OPnP Y % error: {y_error}")
-    # print(f"OPnP Z % error: {z_error}")
-
-    # print(f"\nOpencv X estimate: {x_est_cv}")
-    # print(f"Opencv Y estimate: {y_est_cv}")
-    # print(f"Opencv Z estimate: {z_est_cv}")
-
-    # print(f"\nOpencv X % error: {x_error_cv}")
-    # print(f"Opencv Y % error: {y_error_cv}")
-    # print(f"Opencv Z % error: {z_error_cv}")
-
     t = (responses[0].time_stamp - start_time_stamp) / 1000000000
     x_perc_error_cv = abs(x_error_cv / x_val) * 100
     # y_perc_error_cv = abs((y_error_cv +1 )/ (1+y_val)) * 100
     y_perc_error_cv = abs(np.log(np.exp(y_error_cv)))
     z_perc_error_cv = abs(z_error_cv / z_val) * 100
 
-    # print(f"\nOpencv X % error: {x_perc_error_cv}")
-    # print(f"Opencv Y % error: {y_perc_error_cv}")
-    # print(f"Opencv Z % error: {z_perc_error_cv}")
-
     # plotter.update_plot(t, x_error_cv/100, x_perc_error_cv, y_error_cv/100, y_perc_error_cv, z_error_cv/100, z_perc_error_cv)
     pose_plot.update_plot(t, x_val/100, x_est_cv/100, y_val/100, y_est_cv/100, z_val/100, z_est_cv/100)
-    # print("updated")
     print("secs: " + str(time.time()-start_time))
