@@ -158,7 +158,7 @@ class ErrorPlotter:
 
 
 class PosePlotter:
-    def __init__(self, plots: [list], units: str, time_units: str):
+    def __init__(self, plots: [list], units: str, time_units: str, use_estimates: bool=True):
         '''
         :param plots: List of variable lists to plot on each axis. If a single variable is to be graphed it will be plotted vs time
         :param units: Measurement units of plotted data (used for axis labeling)
@@ -174,6 +174,7 @@ class PosePlotter:
         self.data = {}
         self.est_data = {}
         self.plots = plots
+        self.use_estimates = use_estimates
 
         idx = 0
         for ax in self.axs:
@@ -189,32 +190,42 @@ class PosePlotter:
         plt.ion()
         self.init = False
 
-    def update_plot(self, time: float, *data: float):
+    def update_plot(self, time: float, *in_data: float):
         '''
         :param time: Timestep associated with updated data
         :param data: Data to be plotted, matching order of variables provided to class constructor, in form (data_i, est_data_i, ...)
         '''
         plt.ion()
         self.times.append(time)
+        if self.use_estimates:
+            data = in_data[0:-1:2]
+            est_data = in_data[1::2]
+        else:
+            data = in_data
+            est_data = None
         if not self.init:
-            for d in range(int(len(data)/2)):
-                self.data[d] = [data[2*d]]
-                self.est_data[d] = [data[2*d + 1]]
+            for d in range(len(data)):
+                self.data[d] = [data[d]]
+                if self.use_estimates:
+                    self.est_data[d] = [est_data[d]]
             data_idx = 0
             for p in range(self.num_plots):
                 if len(self.plots[p]) == 1:
-                    data_line, est_line, = self.axs[p].plot(self.times, self.data[data_idx], "b-", self.times, self.est_data[data_idx], "r-")
+                    data_line, = self.axs[p].plot(self.times, self.data[data_idx], "b-")
                     self.data_lines.append(data_line)
-                    self.est_lines.append(est_line)
-                    self.axs[p].legend([self.data_lines[p], self.est_lines[p]], ["Actual " + self.plots[p][0], "Estimated " + self.plots[p][0]])
+                    if self.use_estimates:
+                        est_line, = self.axs[p].plot(self.times, self.est_data[data_idx], "r-")
+                        self.est_lines.append(est_line)
+                        self.axs[p].legend([self.data_lines[p], self.est_lines[p]], ["Actual " + self.plots[p][0], "Estimated " + self.plots[p][0]])
                     data_idx += 1
                 elif len(self.plots[p]) == 2:
-                    data_line, est_line, = self.axs[p].plot(self.data[data_idx], self.data[data_idx + 1], "b-",
-                                                            self.est_data[data_idx], self.est_data[data_idx + 1], "r-")
+                    data_line, = self.axs[p].plot(self.data[data_idx], self.data[data_idx + 1], "b-")
                     self.data_lines.append(data_line)
-                    self.est_lines.append(est_line)
-                    self.axs[p].legend([self.data_lines[p], self.est_lines[p]], ["Actual " + self.plots[p][0] + ", " + self.plots[p][1],
-                                                                                 "Estimated " + self.plots[p][1] + ", " + self.plots[p][1]])
+                    if self.use_estimates:
+                        est_line, = self.axs[p].plot(self.est_data[data_idx], self.est_data[data_idx + 1], "r-")
+                        self.est_lines.append(est_line)
+                        self.axs[p].legend([self.data_lines[p], self.est_lines[p]], ["Actual " + self.plots[p][0] + ", " + self.plots[p][1],
+                                                                                     "Estimated " + self.plots[p][1] + ", " + self.plots[p][1]])
                     data_idx += 2
                 else:
                     pass  # No 3D plotting implemented
@@ -222,18 +233,21 @@ class PosePlotter:
             self.init = True
 
         else:
-            for d in range(int(len(data)/2)):
-                self.data[d].append(data[2*d])
-                self.est_data[d].append(data[2*d + 1])
+            for d in range(len(data)):
+                self.data[d].append(data[d])
+                if self.use_estimates:
+                    self.est_data[d].append(est_data[d])
             data_idx = 0
             for p in range(self.num_plots):
                 if len(self.plots[p]) == 1:
                     self.data_lines[p].set_data(self.times, self.data[data_idx])
-                    self.est_lines[p].set_data(self.times, self.est_data[data_idx])
+                    if self.use_estimates:
+                        self.est_lines[p].set_data(self.times, self.est_data[data_idx])
                     data_idx += 1
                 elif len(self.plots[p]) == 2:
                     self.data_lines[p].set_data(self.data[data_idx], self.data[data_idx + 1])
-                    self.est_lines[p].set_data(self.est_data[data_idx], self.est_data[data_idx + 1])
+                    if self.use_estimates:
+                        self.est_lines[p].set_data(self.est_data[data_idx], self.est_data[data_idx + 1])
                     data_idx += 2
 
                 self.axs[p].relim()
