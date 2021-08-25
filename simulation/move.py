@@ -84,7 +84,7 @@ for w in waypoints:
     start = time.time()
     total = .01
     tilt =  [float("NaN"),float("NaN"),float("NaN")]
-    
+
     # while(True):
     while(time.time()-start < total):
         client.simSetTiltrotorPose(pose,tilt,True,vehicle_name='0',spin_props=True)
@@ -104,7 +104,7 @@ for w in waypoints:
     pose_cam.orientation = airsim.to_quaternion(np.deg2rad(-pitch),0,0)
     pose_cam.position = airsim.Vector3r(0,0,0)
     client.simSetCameraPose("0",pose_cam)
-    
+
     f = open("switch","r")
     switch = bool(int(f.read()))
     f.close()

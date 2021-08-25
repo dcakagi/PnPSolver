@@ -5,13 +5,13 @@ import os
 class LightDetector:
     def __init__(self):
         pass
-    
+
     def upper (self, rgb,to_add):
         if (rgb.count(255) == 2 or rgb.count(0) == 2):
             adjust_brightness = True
-        else: 
+        else:
             adjust_brightness = False
-        
+
         new_rgb = rgb.copy()
         new_hsv = np.add(new_rgb, to_add)
 
@@ -20,10 +20,10 @@ class LightDetector:
 
         if new_hsv[1] >= 255:
             new_hsv[1] = 255
-        
+
         if new_hsv[2] >= 255:
             new_hsv[2] = 255
-        
+
 
         new_rgb = np.array(new_hsv, dtype = "uint8")
         return new_rgb
@@ -36,10 +36,10 @@ class LightDetector:
 
         if new_hsv[1] <= 0:
             new_hsv[1] = 0
-        
+
         if new_hsv[2] <= 0:
             new_hsv[2] = 0
-    
+
         new_rgb = np.array(new_hsv, dtype = "uint8")
         return new_rgb
 
@@ -66,7 +66,7 @@ class LightDetector:
             cv_image = cv2.imdecode(np_image,cv2.IMREAD_COLOR)
         else:
             cv_image = image
-               
+
         hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         # cv2.imshow("conversion",hsv_image)
         # cv2.waitKey(1)
@@ -93,7 +93,7 @@ class LightDetector:
         upper_yellow = self.upper(yellow,[3,10,30])
         mask = cv2.inRange(hsv_image, lower_yellow, upper_yellow)
         all_masks = cv2.add(all_masks,mask)
-        
+
         # red = [0,0,255]
         red = [0,255,255]
         lower_red = self.lower(red,[2,30,20])
@@ -106,7 +106,7 @@ class LightDetector:
         all_masks = cv2.add(all_masks,mask)
         mask = cv2.inRange(hsv_image, lower_red, upper_red)
         all_masks = cv2.add(all_masks,mask)
-        
+
         # green = [25,255,0]
         # green = [0,255,0]
         green = [62,255,255]
@@ -114,7 +114,7 @@ class LightDetector:
         upper_green = self.upper(green,[3,10,30])
         mask = cv2.inRange(hsv_image, lower_green, upper_green)
         all_masks = cv2.add(all_masks,mask)
-        
+
         # blue = [238,71,3]
         # blue = [255,0,0]
         blue = [117,255,230]
@@ -122,14 +122,14 @@ class LightDetector:
         upper_blue = self.upper(blue,[4,10,30])
         mask = cv2.inRange(hsv_image, lower_blue, upper_blue)
         all_masks = cv2.add(all_masks,mask)
-        
+
         # red_magenta = [133,0,255]
         red_magenta = [165,255,255]
         lower_redmagenta = self.lower(red_magenta,[2,50,30])
         upper_redmagenta = self.upper(red_magenta,[2,10,30])
         mask = cv2.inRange(hsv_image, lower_redmagenta, upper_redmagenta)
         all_masks = cv2.add(all_masks,mask)
-        
+
         # orange = [0,130,255]
         orange = [15,255,245]
         lower_orange = self.lower(orange,[1,10,30])
@@ -148,10 +148,10 @@ class LightDetector:
         uppers = np.array([upper_cyan,upper_magenta,upper_yellow,upper_red,upper_green,upper_blue,upper_redmagenta,upper_orange,upper_bluegreen])
         lowers = np.array([lower_cyan,lower_magenta,lower_yellow,lower_red,lower_green,lower_blue,lower_redmagenta,lower_orange,lower_bluegreen])
         key_colors = np.array(["cyan","magenta","yellow","red","green","blue","red_magenta","orange","blue_green"])
-    
+
         # output = cv2.bitwise_and(cv_image, cv_image, mask = all_masks)
-        
-        
+
+
         # # kernel=np.ones((3,3),np.uint8)
         # # dilated=cv2.dilate(output,kernel,iterations=3)
         # gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
@@ -172,37 +172,37 @@ class LightDetector:
         # visualize the binary image
         # cv2.imshow('Binary image', img2)
         # cv2.waitKey(1)
-        
+
         # img2 = cv2.bitwise_not(img2)
         # Setup SimpleBlobDetector parameters.
         params = cv2.SimpleBlobDetector_Params()
         params.blobColor = 255
-        
+
         # Change thresholds
         params.minThreshold = 0
         params.maxThreshold = 256
-        
+
         # # Filter by Area.
         params.filterByArea = True
         params.minArea = 10
         params.maxArea = 10000000
-        
+
         # Filter by Circularity
         params.filterByCircularity = True
         params.minCircularity = 0.5
-        
+
         # Filter by Convexity
         params.filterByConvexity = True
         params.minConvexity = 0.5
-        
+
         # Filter by Inertia
         params.filterByInertia =True
         params.minInertiaRatio = 0.5
-        
+
         detector = cv2.SimpleBlobDetector_create(params)
 
         keypoints = detector.detect(img2)
-        
+
         # small = cv2.resize(im_with_keypoints, (0,0), fx=0.5, fy=0.5)
         # cv2.imshow(name,small)
         # cv2.waitKey(1)
@@ -216,10 +216,10 @@ class LightDetector:
                 l = int(point.size/1.9)
 
                 cv2.rectangle(image_copy, (x - l, y - l), (x + l, y + l), (0, 0, 255), 2)
-                
+
                 cx = point.pt[0]
                 cy = point.pt[1]
-                
+
                 cx_int = int(cx)
                 cy_int = int(cy)
                 # msg = "({}, {})".format(cx_int,cy_int)
@@ -228,11 +228,11 @@ class LightDetector:
                 # print()
                 color_name = self.which_color(hsv_image[cy_int,cx_int,:],all_colors,uppers,lowers,key_colors)
                 pixel_locations[color_name] = [cx,cy]
-        
+
         # # detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
 
         # contours, hierarchy = cv2.findContours(image=img2, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_NONE)
-                                            
+
         # # draw contours on the original image
         # image_copy = cv_image.copy()
         # pixel_locations = {}
@@ -250,7 +250,7 @@ class LightDetector:
         #             continue
         #         cx = float(M['m10']/M['m00'])
         #         cy = float(M['m01']/M['m00'])
-                
+
         #         cx_int = int(cx)
         #         cy_int = int(cy)
         #         # msg = "({}, {})".format(cx_int,cy_int)
@@ -261,12 +261,12 @@ class LightDetector:
         #         pixel_locations[color_name] = [cx,cy]
 
         # cv2.imwrite(os.path.normpath("points_detected" + '.png'), cv_image)
-   
-        # small = cv2.resize(image_copy, (0,0), fx=0.5, fy=0.5) 
+
+        # small = cv2.resize(image_copy, (0,0), fx=0.5, fy=0.5)
         # cv2.namedWindow(name)        # Create a named window
         # cv2.moveWindow(name, 0,0)  # Move it to (40,30)
         # cv2.imshow(name, small)
-        # cv2.waitKey(1)        
+        # cv2.waitKey(1)
         # print("got it")
         # return None
         return pixel_locations
@@ -279,7 +279,7 @@ class LightDetector:
             cv_image = cv2.imdecode(np_image,cv2.IMREAD_COLOR)
         else:
             cv_image = image
-                
+
         hsv_image = cv2.cvtColor(cv_image, cv2.COLOR_BGR2HSV)
         # cv2.imshow("conversion",hsv_image)
         # cv2.waitKey(1)
@@ -300,21 +300,21 @@ class LightDetector:
         upper_purple = self.upper(purple,[10,30,30])
         mask = cv2.inRange(hsv_image, lower_purple, upper_purple)
         all_masks = cv2.add(all_masks,mask)
-        
+
         light_magenta = [158,255,255]
         lower_light_magenta = self.lower(light_magenta,[3,50,40])
         upper_light_magenta = self.upper(light_magenta,[3,10,20])
         mask = cv2.inRange(hsv_image, lower_light_magenta, upper_light_magenta)
         all_masks = cv2.add(all_masks,mask)
-        
-        
+
+
         all_colors = np.array([yellow_green,cyan_blue,purple,light_magenta])
         uppers = np.array([upper_yellow_green,upper_cyan_blue,upper_purple,upper_light_magenta])
         lowers = np.array([lower_yellow_green,lower_cyan_blue,lower_purple,lower_light_magenta])
         key_colors = np.array(["yellow_green","cyan_blue","purple","light_magenta"])
-    
+
         # output = cv2.bitwise_and(cv_image, cv_image, mask = all_masks)
-        
+
         # # kernel=np.ones((3,3),np.uint8)
         # # dilated=cv2.dilate(output,kernel,iterations=3)
         # gray = cv2.cvtColor(output, cv2.COLOR_BGR2GRAY)
@@ -336,32 +336,32 @@ class LightDetector:
         # Setup SimpleBlobDetector parameters.
         params = cv2.SimpleBlobDetector_Params()
         params.blobColor = 255
-        
+
         # Change thresholds
         params.minThreshold = 0
         params.maxThreshold = 256
-        
+
         # # Filter by Area.
         params.filterByArea = True
         params.minArea = 10
         params.maxArea = 10000000000
-        
+
         # Filter by Circularity
         params.filterByCircularity = True
         params.minCircularity = 0.5
-        
+
         # Filter by Convexity
         params.filterByConvexity = True
         params.minConvexity = 0.5
-        
+
         # Filter by Inertia
         params.filterByInertia =True
         params.minInertiaRatio = 0.5
-        
+
         detector = cv2.SimpleBlobDetector_create(params)
-        
+
         keypoints = detector.detect(img2)
-        
+
         # small = cv2.resize(im_with_keypoints, (0,0), fx=0.5, fy=0.5)
         # cv2.imshow(name,small)
         # cv2.waitKey(1)
@@ -375,10 +375,10 @@ class LightDetector:
                 l = int(point.size/1.9)
 
                 cv2.rectangle(image_copy, (x - l, y - l), (x + l, y + l), (0, 0, 255), 2)
-                
+
                 cx = point.pt[0]
                 cy = point.pt[1]
-                
+
                 cx_int = int(cx)
                 cy_int = int(cy)
                 # msg = "({}, {})".format(cx_int,cy_int)
@@ -387,11 +387,11 @@ class LightDetector:
                 # print()
                 color_name = self.which_color(hsv_image[cy_int,cx_int,:],all_colors,uppers,lowers,key_colors)
                 pixel_locations[color_name] = [cx,cy]
-                
+
         # # detect the contours on the binary image using cv2.CHAIN_APPROX_NONE
 
         # contours, hierarchy = cv2.findContours(image=img2, mode=cv2.RETR_EXTERNAL, method=cv2.CHAIN_APPROX_NONE)
-                                            
+
         # # draw contours on the original image
         # image_copy = cv_image.copy()
         # pixel_locations = {}
@@ -409,7 +409,7 @@ class LightDetector:
         #             continue
         #         cx = float(M['m10']/M['m00'])
         #         cy = float(M['m01']/M['m00'])
-                
+
         #         cx_int = int(cx)
         #         cy_int = int(cy)
         #         msg = "({}, {})".format(cx_int,cy_int)
@@ -421,9 +421,9 @@ class LightDetector:
 
         # cv2.imwrite(os.path.normpath("points_detected" + '.png'), cv_image)
 
-        # small = cv2.resize(image_copy, (0,0), fx=0.5, fy=0.5) 
+        # small = cv2.resize(image_copy, (0,0), fx=0.5, fy=0.5)
         # cv2.namedWindow(name)        # Create a named window
         # cv2.moveWindow(name, 0,0)  # Move it to (40,30)
         # cv2.imshow(name, small)
-        # cv2.waitKey(1)        
+        # cv2.waitKey(1)
         return pixel_locations

@@ -63,4 +63,3 @@ if __name__ == '__main__':
 
         #rot_plotter.update_plot(t, pitch_error, pitch_perc_error, roll_error, roll_perc_error, yaw_error, yaw_perc_error)
         rot_plotter.update_plot(t, pitch_error, roll_error, yaw_error)
-

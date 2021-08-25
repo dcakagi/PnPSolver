@@ -85,10 +85,10 @@ while(True):
         responses = client.simGetImages([
                         airsim.ImageRequest("3", airsim.ImageType.Scene, False, False)])  #scene vision image in uncompressed RGBA array
         fov = np.deg2rad(client.simGetCameraInfo("3").fov)
-    
+
     # zoom = pixels_width / (2 * np.tan(fov / 2) * focal_pixels_init)
     # print("zoom: " + str(zoom))
-    
+
     if first:
         start_time_stamp = responses[0].time_stamp
         first = False
@@ -106,13 +106,13 @@ while(True):
 
     position.x_val -= landing_point[0]
     position.y_val -= landing_point[1]
-    position.z_val -= landing_point[2]    
-    
+    position.z_val -= landing_point[2]
+
     # print("camera Position: ")
     # print(position)
     # print()
 
-    image_1d = np.frombuffer(image_bytes, dtype=np.uint8) 
+    image_1d = np.frombuffer(image_bytes, dtype=np.uint8)
 
     # reshape array to 3 channel image array H X W X 3
     image_rgb = image_1d.reshape(responses[0].height, responses[0].width, 3)
@@ -122,8 +122,8 @@ while(True):
 
     if not flag:
         pixel_locations = light_detector.detect(image_rgb,"front")
-    
-    
+
+
     print(len(pixel_locations.values()))
     if len(pixel_locations.values()) < 6:
         if not once:
@@ -165,28 +165,28 @@ while(True):
         # print( "Not enought points detected")
     else:
         estimated_camera_location_cv = estimator_cv.updatePose(pixel_locations)
-    
-    
+
+
     # # write images and other data to file
     # cv2.imwrite(os.path.normpath("data_300m_zoom/pictures/pic_" + str(i) + '.png'), image_rgb)
-    
+
     # actual_positions = np.array([position.x_val, position.y_val,position.z_val])
     # with open('data_300m_zoom/actual_positions.txt','ab') as f:
-    #     np.savetxt(f, actual_positions.reshape(1,3), delimiter=',')  
-    
+    #     np.savetxt(f, actual_positions.reshape(1,3), delimiter=',')
+
     # with open('data_300m_zoom/FOVs.txt','ab') as f:
-    #     np.savetxt(f, [fov], delimiter=',')  
+    #     np.savetxt(f, [fov], delimiter=',')
 
     # pixel_file = open("data_300m_zoom/pixel_locations/px_loc_" + str(i) + ".pkl","wb")
     # pickle.dump(pixel_locations,pixel_file)
     # pixel_file.close()
-    i += 1 
+    i += 1
 
     x_est_cv = estimated_camera_location_cv[0, 0]
     y_est_cv = estimated_camera_location_cv[1, 0]
     z_est_cv = estimated_camera_location_cv[2, 0]
 
-    x_val = position.x_val 
+    x_val = position.x_val
     y_val = position.y_val
     z_val = position.z_val
 
