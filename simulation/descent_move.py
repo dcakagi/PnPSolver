@@ -16,12 +16,17 @@ end_wrt_start = landing_point - start_location
 
 pixels_height = 2160
 pixels_width = 3840
-down_fov = 5 * np.pi / 6  # Fisheye lens for downward facing camera - 150 deg FOV
+pixels_diag = np.sqrt(pixels_height**2 + pixels_width**2)
+down_fov_diag = 5 * np.pi / 6  # Fisheye lens for downward facing camera - 150 deg FOV (diagonal)
 forward_fov = np.pi / 2  # 90 deg FOV for forward facing camera
+
+focal_pix = pixels_diag / (2 * np.tan(down_fov_diag / 2))
+
+down_fov_horiz = 2 * np.arctan(pixels_width / (2 * focal_pix))
 
 fixed_camera_pitch = -7.0 * np.pi / 180  # from body of plane, in radians
 
-client.simSetCameraFov("3", np.rad2deg(down_fov))
+client.simSetCameraFov("0", np.rad2deg(down_fov_horiz))
 
 height = 60 * 100  # Start at height of 60 m above ending location
 
@@ -29,7 +34,7 @@ startx = end_wrt_start[0]
 starty = end_wrt_start[1]
 startz = end_wrt_start[2] - height
 
-dx = 0.5  # in cm
+dx = 1.0  # in cm
 z_coords = np.arange(startz, end_wrt_start[2] + dx, dx).reshape(1, -1)
 y_coords = np.ones((1, z_coords.shape[1])) * starty
 x_coords = np.ones((1, z_coords.shape[1])) * startx
@@ -51,7 +56,7 @@ for w in waypoints:
         client.simSetTiltrotorPose(pose, tilt, True, spin_props=True, vehicle_name='0')
 
     pose_aircraft = client.getTiltrotorState().kinematics_true
-    pose_camera = client.simGetCameraInfo("3").pose  # Downward facing camera
+    pose_camera = client.simGetCameraInfo("0").pose  # Downward facing camera
 
     dx = end_wrt_start[0] - pose.position.x_val * 100  # Convert to cm
     dy = end_wrt_start[1] - pose.position.y_val * 100  # Should be 0 for pure vertical descent (same as dx)
@@ -63,8 +68,10 @@ for w in waypoints:
 
     pose_camera.orientation = airsim.to_quaternion(-cam_pitch, 0, 0)
     pose_camera.position = airsim.Vector3r(0, 0, 0)
-    client.simSetCameraPose("3", pose_camera)
+    client.simSetCameraPose("0", pose_camera)
+    # print(pose_camera)
 
+print("done")
 
 
 
