@@ -41,16 +41,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_1_lower, light_1_upper)
         all_masks = mask
 
-        cv2.imwrite("mask_1.png", mask)
-
         light_2_upper = np.array([26.0,255,255], dtype = "double")
         light_2_lower = np.array([10.5,245,222], dtype = "double")
         light_2_upper[0] *= 0.5
         light_2_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_2_lower, light_2_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_2.png", mask)
 
         light_3_upper = np.array([41.3,255,255], dtype = "double")
         light_3_lower = np.array([27.9,245,222], dtype = "double")
@@ -59,16 +55,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_3_lower, light_3_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_3.png", mask)
-
         light_4_upper = np.array([51.6,255,255], dtype = "double")
         light_4_lower = np.array([42.5,245,221], dtype = "double")
         light_4_upper[0] *= 0.5
         light_4_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_4_lower, light_4_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_4.png", mask)
 
         light_5_upper = np.array([58.8,255,255], dtype = "double")
         light_5_lower = np.array([56.7,233,215], dtype = "double")
@@ -77,16 +69,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_5_lower, light_5_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_5.png", mask)
-
         light_6_upper = np.array([61.1,255,255], dtype = "double")
         light_6_lower = np.array([60.1,208,214], dtype = "double")
         light_6_upper[0] *= 0.5
         light_6_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_6_lower, light_6_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_6.png", mask)
 
         light_7_upper = np.array([63.4,255,255], dtype = "double")
         light_7_lower = np.array([62.6,215,215], dtype = "double")
@@ -95,16 +83,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_7_lower, light_7_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_7.png", mask)
-
         light_8_upper = np.array([68.3,255,255], dtype = "double")
         light_8_lower = np.array([65.2,228,215], dtype = "double")
         light_8_upper[0] *= 0.5
         light_8_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_8_lower, light_8_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_8.png", mask)
 
         light_9_upper = np.array([75.6,255,255], dtype = "double")
         light_9_lower = np.array([68.6,240,215], dtype = "double")
@@ -113,8 +97,6 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_9_lower, light_9_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_9.png", mask)
-
         light_10_upper = np.array([88.7,255,255], dtype = "double")
         light_10_lower = np.array([76.0,242,217], dtype = "double")
         light_10_upper[0] *= 0.5
@@ -122,25 +104,18 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_10_lower, light_10_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_10.png", mask)
-
         light_11_upper = np.array([123.6,255,255], dtype = "double")
         light_11_lower = np.array([104.3,242,218], dtype = "double")
         light_11_upper[0] *= 0.5
         light_11_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_11_lower, light_11_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_11.png", mask)
-
         light_12_upper = np.array([140.0,255,255], dtype = "double")
         light_12_lower = np.array([134.1,175,217], dtype = "double")
         light_12_upper[0] *= 0.5
         light_12_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_12_lower, light_12_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_12.png", mask)
 
         light_13_upper = np.array([151.0,255,255], dtype = "double")
         light_13_lower = np.array([147.4,159,216], dtype = "double")
@@ -149,16 +124,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_13_lower, light_13_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_13.png", mask)
-
         light_14_upper = np.array([161.6,235,251], dtype = "double")
         light_14_lower = np.array([159.6,126,213], dtype = "double")
         light_14_upper[0] *= 0.5
         light_14_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_14_lower, light_14_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_14.png", mask)
 
         light_15_upper = np.array([169.0,195,249], dtype = "double")
         light_15_lower = np.array([165.0,105,212], dtype = "double")
@@ -167,16 +138,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_15_lower, light_15_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_15.png", mask)
-
         light_16_upper = np.array([172.9,182,248], dtype = "double")
         light_16_lower = np.array([171.9,96,211], dtype = "double")
         light_16_upper[0] *= 0.5
         light_16_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_16_lower, light_16_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_16.png", mask)
 
         light_17_upper = np.array([177.0,185,248], dtype = "double")
         light_17_lower = np.array([176.2,96,212], dtype = "double")
@@ -185,16 +152,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_17_lower, light_17_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_17.png", mask)
-
         light_18_upper = np.array([180.9,225,243], dtype = "double")
         light_18_lower = np.array([179.8,135,202], dtype = "double")
         light_18_upper[0] *= 0.5
         light_18_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_18_lower, light_18_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_18.png", mask)
 
         light_19_upper = np.array([185.3,255,244], dtype = "double")
         light_19_lower = np.array([182.5,188,203], dtype = "double")
@@ -203,16 +166,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_19_lower, light_19_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_19.png", mask)
-
         light_20_upper = np.array([193.4,255,245], dtype = "double")
         light_20_lower = np.array([186.2,218,203], dtype = "double")
         light_20_upper[0] *= 0.5
         light_20_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_20_lower, light_20_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_20.png", mask)
 
         light_21_upper = np.array([208.4,255,245], dtype = "double")
         light_21_lower = np.array([194.8,221,203], dtype = "double")
@@ -221,16 +180,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_21_lower, light_21_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_21.png", mask)
-
         light_22_upper = np.array([241.5,255,246], dtype = "double")
         light_22_lower = np.array([224.5,214,207], dtype = "double")
         light_22_upper[0] *= 0.5
         light_22_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_22_lower, light_22_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_22.png", mask)
 
         light_23_upper = np.array([259.2,255,246], dtype = "double")
         light_23_lower = np.array([258.2,168,205], dtype = "double")
@@ -239,16 +194,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_23_lower, light_23_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_23.png", mask)
-
         light_24_upper = np.array([275.3,255,246], dtype = "double")
         light_24_lower = np.array([270.4,167,204], dtype = "double")
         light_24_upper[0] *= 0.5
         light_24_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_24_lower, light_24_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_24.png", mask)
 
         light_25_upper = np.array([294.0,255,246], dtype = "double")
         light_25_lower = np.array([285.5,161,204], dtype = "double")
@@ -257,16 +208,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_25_lower, light_25_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_25.png", mask)
-
         light_26_upper = np.array([302.5,255,250], dtype = "double")
         light_26_lower = np.array([295.5,155,204], dtype = "double")
         light_26_upper[0] *= 0.5
         light_26_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_26_lower, light_26_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_26.png", mask)
 
         light_27_upper = np.array([309.2,255,255], dtype = "double")
         light_27_lower = np.array([308.6,169,229], dtype = "double")
@@ -275,16 +222,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_27_lower, light_27_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_27.png", mask)
-
         light_28_upper = np.array([313.6,255,255], dtype = "double")
         light_28_lower = np.array([310.3,195,229], dtype = "double")
         light_28_upper[0] *= 0.5
         light_28_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_28_lower, light_28_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_28.png", mask)
 
         light_29_upper = np.array([335.9,255,255], dtype = "double")
         light_29_lower = np.array([323.1,239,222], dtype = "double")
@@ -293,16 +236,12 @@ class LightDetector:
         mask = cv2.inRange(hsv_image, light_29_lower, light_29_upper)
         all_masks = cv2.add(all_masks,mask)
 
-        cv2.imwrite("mask_29.png", mask)
-
         light_30_upper = np.array([345.2,255,255], dtype = "double")
         light_30_lower = np.array([337.2,231,221], dtype = "double")
         light_30_upper[0] *= 0.5
         light_30_lower[0] *= 0.5
         mask = cv2.inRange(hsv_image, light_30_lower, light_30_upper)
         all_masks = cv2.add(all_masks,mask)
-
-        cv2.imwrite("mask_30.png", mask)
 
         uppers = np.array([light_1_upper, light_2_upper, light_3_upper, light_4_upper, light_5_upper, \
             light_6_upper, light_7_upper, light_8_upper, light_9_upper, light_10_upper, light_11_upper, \
