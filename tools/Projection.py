@@ -1,7 +1,7 @@
 import numpy as np
 
 
-def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix_height):
+def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix_height, cam_elevation, cam_azumith):
 
     # Find unit vector pointing from camera to vertiport defined in body-fixed
     # inertial frame -- call it the vehicle frame (v)
@@ -17,6 +17,9 @@ def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix
     # Find azimuth and elevation angle to vertiport from camera location
     az = np.arctan2(ell_v_unit[1, 0], ell_v_unit[0, 0])
     el = -np.arcsin(ell_v_unit[2, 0])
+
+    az = cam_azumith
+    el = cam_elevation
 
     # Find rotations between vehicle frame and camera frame
     # See sections 13.1 and 13.2 in uavbook
@@ -70,13 +73,16 @@ def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix
 if __name__ == '__main__':
     from PoseEstimator import PoseEstimator
 
-    x_pos = 100
-    y_pos = 100
-    z_pos = -50
-
     constellation_points = 20
     horiz_dim = 40
     vert_dim = 40
+
+    camera_elevation = 7.0 * np.pi / 180  # 7 degree tilted camera
+    camera_azumith = np.pi  # Camera facing straight forward (in vehicle frame)
+
+    x_pos = 100
+    y_pos = 100
+    z_pos = -50
 
     constellation = np.zeros((3, constellation_points))
     constellation[0:2, :] = np.random.uniform(-horiz_dim/2, horiz_dim/2, (2, constellation_points))
@@ -91,7 +97,7 @@ if __name__ == '__main__':
     fov = np.pi / 2
     focal_pix = pix_width / (2 * np.tan(fov / 2))
 
-    pix_locations = project_points(x_pos, y_pos, z_pos, constellation, focal_pix, pix_width, pix_height)
+    pix_locations = project_points(x_pos, y_pos, z_pos, constellation, focal_pix, pix_width, pix_height, camera_elevation, camera_azumith)
 
     pixels = {}
     for m in range(constellation_points):
