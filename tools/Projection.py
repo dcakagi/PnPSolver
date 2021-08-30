@@ -1,6 +1,16 @@
 import numpy as np
 
 
+def filter_points(pixel_locations, pix_width, pix_height, rear_points):
+    new_pixels = {}
+    idx = 0
+    for pix in pixel_locations:
+        if pixel_locations[pix][0] <= pix_width and pixel_locations[pix][0] > 0 and pixel_locations[pix][1] <= pix_height and pixel_locations[pix][1] > 0:
+            if idx not in rear_points:
+                new_pixels[pix] = pixel_locations[pix]
+        idx += 1
+    return new_pixels
+
 def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix_height, cam_elevation, cam_azumith):
 
     # Find unit vector pointing from camera to vertiport defined in body-fixed
@@ -52,6 +62,7 @@ def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix
 
     # Camera-frame z-distance to light sources
     lamb = ell_pts_c[2, :]
+    rear_points = [x for x in range(len(lamb)) if lamb[x] <= 0]
 
     # light source pixel locations, float, no noise -- perfect imaging
     fpx = focal_pix
@@ -68,7 +79,7 @@ def project_points(xc_vp, yc_vp, zc_vp, constellation, focal_pix, pix_width, pix
 
     uu = np.array([xp_c, yp_c])
 
-    return uu
+    return uu, rear_points
 
 if __name__ == '__main__':
     from PoseEstimator import PoseEstimator
@@ -82,7 +93,7 @@ if __name__ == '__main__':
 
     x_pos = 100
     y_pos = 100
-    z_pos = -50
+    z_pos = 50
 
     constellation = np.zeros((3, constellation_points))
     constellation[0:2, :] = np.random.uniform(-horiz_dim/2, horiz_dim/2, (2, constellation_points))
@@ -97,14 +108,16 @@ if __name__ == '__main__':
     fov = np.pi / 2
     focal_pix = pix_width / (2 * np.tan(fov / 2))
 
-    pix_locations = project_points(x_pos, y_pos, z_pos, constellation, focal_pix, pix_width, pix_height, camera_elevation, camera_azumith)
+    pix_locations, rear_points = project_points(x_pos, y_pos, z_pos, constellation, focal_pix, pix_width, pix_height, camera_elevation, camera_azumith)
 
     pixels = {}
     for m in range(constellation_points):
         pixels[m] = pix_locations[:, m]
 
+    filtered_pix = filter_points(pixels, pix_width, pix_height, rear_points)
+
     estimator = PoseEstimator(constellation_dict, pix_width, pix_height, focal_pix, solver_type="opencv")
 
-    est_pose = estimator.updatePose(pixels)
+    est_pose = estimator.updatePose(filtered_pix)
 
     print(est_pose)
