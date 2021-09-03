@@ -21,7 +21,6 @@ class LightDetector:
             self.lowers.append(self.lower(color,[.5,5,5]))
         self.approach_colors = range(0,17)
         self.descent_colors = range(0,59)
-        self.current_colors = self.approach_colors
 
     def upper (self, hsv,to_add):
 
@@ -91,7 +90,7 @@ class LightDetector:
         
         first = True
         i = 1
-        for i in self.current_colors:
+        for i in self.descent_colors:
 
             color = self.colors[i]
             low = self.lower(color,sub)
@@ -238,11 +237,11 @@ class LightDetector:
         # cv2.imwrite(os.path.normpath("points_detected" + '.png'), cv_image)
         # cv2.imwrite(os.path.normpath("points_detected" + '.png'), image_copy)
 
-        small = cv2.resize(image_copy, (0,0), fx=.5, fy=.5)
-        cv2.namedWindow(name)        # Create a named window
-        cv2.moveWindow(name, 0,0)  # Move it to (40,30)
-        cv2.imshow(name, small)
-        cv2.waitKey(1)
+        # small = cv2.resize(image_copy, (0,0), fx=.5, fy=.5)
+        # cv2.namedWindow(name)        # Create a named window
+        # cv2.moveWindow(name, 0,0)  # Move it to (40,30)
+        # cv2.imshow(name, small)
+        # cv2.waitKey(1)
         # print("got it")
         # return None
         return pixel_locations
